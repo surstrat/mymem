@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Удалить напоминание</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'reminders/style.css' %}">
+</head>
+<body>
+    <h1>Удалить напоминание?</h1>
+    <p><strong>{{ reminder.title }}</strong></p>
+    <p>{{ reminder.text|truncatewords:30 }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Да, удалить</button>
+        <a href="{% url 'reminder_list' %}">Отмена</a>
+    </form>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Редактировать напоминание</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'reminders/style.css' %}">
+</head>
+<body>
+    <h1>Редактирование: {{ reminder.title }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+    </form>
+    <a href="{% url 'reminder_list' %}">Отмена</a>
+</body>
+</html>

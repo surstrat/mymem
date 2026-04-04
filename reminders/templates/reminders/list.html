@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мои напоминания</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'reminders/style.css' %}">
+</head>
+<body>
+    <h1>Мои напоминания</h1>
+    <a href="{% url 'reminder_create' %}">Создать напоминание</a>
+    <ul>
+        {% for reminder in reminders %}
+            <li>
+                <strong>{{ reminder.title }}</strong><br>
+                Отправить: {{ reminder.send_at }}<br>
+                Тип: {{ reminder.get_recipient_type_display }}
+                <br>
+                <a href="{% url 'reminder_edit' reminder.id %}">Редактировать</a> |
+                <a href="{% url 'reminder_delete' reminder.id %}">Удалить</a>
+            </li>
+        {% empty %}
+            <li>Нет напоминаний</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
