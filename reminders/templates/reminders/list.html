@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Мои напоминания</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'reminders/style.css' %}">
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
     <h1>Мои напоминания</h1>
-    <a href="{% url 'reminder_create' %}">Создать напоминание</a>
+    <a href="{% url 'reminder_create' %}" class="btn">Создать напоминание</a>
+    
     <ul>
         {% for reminder in reminders %}
             <li>
@@ -22,5 +18,4 @@
             <li>Нет напоминаний</li>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}

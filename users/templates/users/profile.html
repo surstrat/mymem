@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Профиль пользователя: {{ user.username }}</h2>
+    <p><strong>Часовой пояс:</strong> {{ user.profile.timezone }}</p>
+    <p><strong>Email (зашифрован):</strong> {{ user.profile.email_encrypted|default:"Не указан" }}</p>
+    <p><strong>Telegram ID (зашифрован):</strong> {{ user.profile.telegram_chat_id_encrypted|default:"Не указан" }}</p>
+    <a href="{% url 'reminder_list' %}" class="btn btn-secondary">К напоминаниям</a>
+</div>
+{% endblock %}
