@@ -60,9 +60,12 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'reminders.context_processors.public_reminders',
+                
             ],
         },
     },
@@ -120,3 +123,8 @@ STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = '/'  # Куда перенаправлять после входа
 LOGOUT_REDIRECT_URL = '/'  # Куда после выхода
+
+# Настройки авторизации
+LOGIN_URL = 'login'  # куда перенаправлять неавторизованных пользователей
+LOGIN_REDIRECT_URL = 'reminder_list'  # куда перенаправлять после входа
+LOGOUT_REDIRECT_URL = 'login'  # куда перенаправлять после выхода

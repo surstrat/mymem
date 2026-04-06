@@ -73,6 +73,159 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+        .layout {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            width: 30%;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .content {
+            width: 70%;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .reminder-card {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: box-shadow 0.2s;
+        }
+
+        .reminder-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .reminder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .reminder-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+
+        .reminder-datetime {
+            font-size: 14px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .reminder-description {
+            color: #555;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .reminder-description-preview {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .reminder-actions {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .reminder-actions .btn-small {
+            padding: 4px 12px;
+            font-size: 14px;
+        }
+
+        .btn-small {
+            display: inline-block;
+            padding: 4px 12px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-small:hover {
+            background-color: #0056b3;
+        }
+    @media (max-width: 768px) {
+        .layout {
+            flex-direction: column;
+        }
+        .sidebar, .content {
+            width: 100%;
+        }
+        
+        /* Превращаем вертикальное меню в горизонтальное снизу */
+        .sidebar {
+            order: 2;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            border-radius: 8px 8px 0 0;
+            padding: 8px 5px;
+            z-index: 100;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar ul {
+            display: flex;
+            justify-content: space-around;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .sidebar li {
+            display: inline;
+            text-align: center;
+        }
+        
+        .sidebar li a, .sidebar li form {
+            font-size: 12px;
+        }
+        
+        /* Убираем текст, оставляем только иконки для некоторых пунктов */
+        .sidebar li a {
+            display: inline-block;
+            font-size: 0;
+        }
+        
+        .sidebar li a::before {
+            font-size: 20px;
+            display: block;
+            text-align: center;
+        }
+        
+        /* Добавляем отступ снизу для контента, чтобы меню не перекрывало */
+        .content {
+            margin-bottom: 60px;
+        }
+        
+        /* Пункт "Выйти" переносим внутрь профиля (пока оставляем как есть, позже спрячем) */
+        .sidebar li:last-child {
+            display: none;  /* Временно скрываем кнопку "Выйти" в мобильной версии */
+        }
+    }        
     </style>
 </head>
 <body>
@@ -81,24 +234,66 @@
         {% if user.is_authenticated %}
             <a href="{% url 'reminder_create' %}">Создать напоминание</a>
             <a href="{% url 'profile' %}">Профиль ({{ user.username }})</a>
-            <a href="{% url 'logout' %}" class="right">Выйти</a>
+
         {% else %}
             <a href="{% url 'login' %}" class="right">Войти</a>
             <a href="{% url 'register' %}" class="right">Регистрация</a>
         {% endif %}
     </div>
     
-    <div class="container">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
-                {% endfor %}
+    <div class="layout">
+        <div class="sidebar">
+            <h3>Меню</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li><a href="{% url 'reminder_list' %}">🏠 Мои напоминания</a></li>
+                <li><a href="{% url 'reminder_create' %}">➕ Создать напоминание</a></li>
+                <li><a href="#">📰 Новости</a></li>
+                <li><a href="{% url 'profile' %}">👤 Мой профиль</a></li>
+                <li><a href="#">👥 Друзья</a></li>
+                {% if user.is_authenticated %}
+
+                {% endif %}
             </ul>
-        {% endif %}
+        </div>
         
-        {% block content %}
-        {% endblock %}
-    </div>
+        <div class="content">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+            {% block content %}
+            {% endblock %}
+
+            <!-- Публичные напоминания -->
+            <div style="margin-top: 20px;">
+                <h3>📢 Публичные напоминания</h3>
+                {% if public_reminders_list %}
+                    {% for reminder in public_reminders_list %}
+                    <div class="reminder-card" style="background: #f9f9f9;">
+                        <div class="reminder-header">
+                            <h3 class="reminder-title">{{ reminder.title }}</h3>
+                            <span class="reminder-datetime">{{ reminder.send_at }}</span>
+                        </div>
+                        <div class="reminder-description reminder-description-preview">
+                            {{ reminder.description|truncatechars:80 }}
+                        </div>
+                        <div style="font-size: 12px; color: #888; margin: 5px 0;">
+                            👤 Автор: {{ reminder.author_name }}
+                        </div>
+                        <div class="reminder-actions">
+                            <button class="btn-small" style="background-color: #28a745;">➕ Подписаться</button>
+                            <button class="btn-small" style="background-color: #6c757d;">🙈 Скрыть автора</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #666;">Публичных напоминаний пока нет</p>
+                {% endif %}
+            </div>
+        </div>
 </body>
 </html>

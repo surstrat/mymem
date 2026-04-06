@@ -1,21 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Мои напоминания</h1>
-    <a href="{% url 'reminder_create' %}" class="btn">Создать напоминание</a>
-    
-    <ul>
-        {% for reminder in reminders %}
-            <li>
-                <strong>{{ reminder.title }}</strong><br>
-                Отправить: {{ reminder.send_at }}<br>
-                Тип: {{ reminder.get_recipient_type_display }}
-                <br>
-                <a href="{% url 'reminder_edit' reminder.id %}">Редактировать</a> |
-                <a href="{% url 'reminder_delete' reminder.id %}">Удалить</a>
-            </li>
-        {% empty %}
-            <li>Нет напоминаний</li>
-        {% endfor %}
-    </ul>
+<h2>Мои напоминания</h2>
+
+{% if reminders %}
+    {% for reminder in reminders %}
+    <div class="reminder-card">
+        <div class="reminder-header">
+            <h3 class="reminder-title">{{ reminder.title }}</h3>
+            <span class="reminder-datetime">{{ reminder.send_at|date:"d.m.Y H:i" }}</span>
+        </div>
+        {% if reminder.description %}
+        <div class="reminder-description reminder-description-preview">
+            {{ reminder.description|truncatechars:100 }}
+        </div>
+        {% endif %}
+        <div class="reminder-actions">
+            <a href="{% url 'reminder_edit' reminder.id %}" class="btn-small">✏️ Редактировать</a>
+            <a href="{% url 'reminder_delete' reminder.id %}" class="btn-small" style="background-color: #dc3545;" onclick="return confirm('Удалить напоминание?')">🗑️ Удалить</a>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>У вас пока нет напоминаний. <a href="{% url 'reminder_create' %}">Создать первое напоминание</a></p>
+{% endif %}
 {% endblock %}

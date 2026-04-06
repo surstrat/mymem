@@ -8,4 +8,10 @@
     <p><strong>Telegram ID (зашифрован):</strong> {{ user.profile.telegram_chat_id_encrypted|default:"Не указан" }}</p>
     <a href="{% url 'reminder_list' %}" class="btn btn-secondary">К напоминаниям</a>
 </div>
+
+<!-- Кнопка выхода (видна на всех устройствах, но особенно важна для мобильных) -->
+<form action="{% url 'logout' %}" method="post" style="margin-top: 20px;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">🚪 Выйти из аккаунта</button>
+</form>
 {% endblock %}
